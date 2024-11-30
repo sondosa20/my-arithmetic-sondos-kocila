@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.hatch.dependencies.tests]
@@ -36,14 +36,22 @@ Issues = "https://github.com/kocila/my-arithmetic-sondos-kocila/issues"
 Source = "https://github.com/kocila/my-arithmetic-sondos-kocila"
 
 [tool.hatch.version]
-path = "src/my_arithmetic_sondos_kocila/__about__.py"
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+version_scheme = "no-guess-dev"
+local_scheme = "no-local-version"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/my_arithmetic_sondos_kocila"]
 
 [tool.hatch.envs.types]
 extra-dependencies = [
   "mypy>=1.0.0",
 ]
-[tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args:src/my_arithmetic_sondos_kocila tests}"
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11"]
 
 [tool.coverage.run]
 source_pkgs = ["my_arithmetic_sondos_kocila", "tests"]
@@ -61,5 +69,5 @@ tests = ["tests", "*/my-arithmetic-sondos-kocila/tests"]
 exclude_lines = [
   "no cov",
   "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
+  "if TYPE_CHECKING:", 
 ]
