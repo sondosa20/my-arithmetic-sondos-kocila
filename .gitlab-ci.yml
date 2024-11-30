@@ -10,12 +10,24 @@ before_script:
   - pip install --upgrade pip
   - pip install hatch hatch-vcs
 
-# Job pour la construction du projet 
-build:
+# Construction pour les tags Git
+build_tag:
   stage: build
   script:
+    - echo "my_arithmetic-sondos-kocila deployment on stable servers
     - hatch build
     - ls -l dist/
+    - rm -rf dist/
+  only:
+    - tags
+
+# Job pour la construction du projet dans la branch develop
+build_develop:
+  stage: build
+  script:
+    - echo "my_arithmetic-sondos-kocila deployment on stable servers
+    - hatch build
+    - ls -l dist/  # pour simuler le déploiement d'une nouvelle version
     - rm -rf dist/
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
@@ -31,3 +43,14 @@ test:
       - coverage.xml  # pour que je puisse récupérer un rapport de couverture généré par Hatch
     expire_in: 1 week
   coverage: '/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+
+# Job pour synchroniser les branches et les tags avec GitHub
+sync-with-github:
+  stage: sync
+  script:
+    - git remote add github $REMOTE_REPOSITORY_URL || true
+    - git push github $CI_COMMIT_REF_NAME --force
+    - git push github --tags
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_TAG'
