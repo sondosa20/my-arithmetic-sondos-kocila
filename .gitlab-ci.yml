@@ -24,6 +24,7 @@ build:
 test:
   stage: test
   script:
+    - hatch run pip install pytest pytest-cov
     - hatch run pytest --cov=src --cov-report=xml
   artifacts:
     paths:
