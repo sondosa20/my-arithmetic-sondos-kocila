@@ -6,6 +6,7 @@ image: python:3.10
 
 #A exécuter avant chaque job
 before_script:
+  - echo "initializing the environment"
   - pip install hatch hatch-vcs
 
 build_tag:
