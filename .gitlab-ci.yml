@@ -15,6 +15,7 @@ build_tag:
     - hatch build
     - echo "my-arithmetic-$USER deployment on stable servers"
     - ls -l dist/
+    - rm -rf dist/
   only:
     - tags
 
@@ -23,7 +24,8 @@ build_develop:
   stage: build
   script:
     - hatch build
-    - echo "my-arithmetic-$USER deployment on develop servers"
+    - echo "my-arithmetic-sondos-kocila deployment on develop servers"
+    - rm -rf dist/
   except:
     - tags
 
