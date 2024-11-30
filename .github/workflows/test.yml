@@ -6,6 +6,9 @@ on:
       - main
       - develop
   pull_request:
+  create:
+    tags:
+      - "*"
 
 jobs:
   test:
@@ -39,7 +42,7 @@ jobs:
   build_tag:
     name: Build for Tag Deployment
     runs-on: ubuntu-latest
-    if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout code
@@ -96,4 +99,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-develop
-          path: dist/
+          path: dist/
