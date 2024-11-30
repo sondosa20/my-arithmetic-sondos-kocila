@@ -6,14 +6,13 @@ image: python:3.10
 
 #A exécuter avant chaque job
 before_script:
-  - echo "initializing the environment"
   - pip install hatch hatch-vcs
 
 build_tag:
   stage: build
   script:
     - hatch build
-    - echo "my-arithmetic-$USER deployment on stable servers"
+    - echo "my-arithmetic-sondos-kocila deployment on stable servers"
     - ls -l dist/
     - rm -rf dist/
   only:
@@ -25,9 +24,10 @@ build_develop:
   script:
     - hatch build
     - echo "my-arithmetic-sondos-kocila deployment on develop servers"
+    - ls -l dist/
     - rm -rf dist/
-  except:
-    - tags
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
 
 test:
   stage: test
