@@ -1,1 +1,1 @@
-Test GitLab to GitHub Mirror
+Testing GitLab to GitHub mirroring
