@@ -1,1 +1,2 @@
 Testing GitLab to GitHub mirroring
+Test sync with updated token
