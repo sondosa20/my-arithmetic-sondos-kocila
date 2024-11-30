@@ -1,0 +1,36 @@
+stages:
+  - build
+  - test
+
+image: python:3.10
+
+#A exécuter avant chaque job
+before_script:
+  - pip install hatch hatch-vcs
+
+build_tag:
+  stage: build
+  script:
+    - hatch build
+    - echo "my-arithmetic-$USER deployment on stable servers"
+    - ls -l dist/
+  only:
+    - tags
+
+# Job pour la construction du projet sur la branche develop
+build_develop:
+  stage: build
+  script:
+    - hatch build
+    - echo "my-arithmetic-$USER deployment on develop servers"
+  except:
+    - tags
+
+test:
+  stage: test
+  script:
+    - hatch test
+  artifacts:
+    paths:
+      - coverage.xml  # pour que je puisse récupérer un rapport de couverture généré par Hatch
+  coverage: '/^TOTAL\s+\d+\s+\d+\s+(\d+)%$/'
