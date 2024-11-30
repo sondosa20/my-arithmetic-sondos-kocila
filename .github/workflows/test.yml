@@ -30,7 +30,7 @@ jobs:
           pip install hatch pytest pytest-cov
 
       - name: Run tests
-         run: |
+        run: |
           hatch run pytest --cov=src --cov-report=xml
 
       - name: Upload coverage data
