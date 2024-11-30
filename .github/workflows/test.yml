@@ -1,0 +1,99 @@
+name: Test, Coverage, and Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch pytest pytest-cov
+
+      - name: Run tests
+        run: |
+          hatch test --cov=src --cov-report=xml
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+
+  build_tag:
+    name: Build for Tag Deployment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch hatch-vcs
+
+      - name: Build project
+        run: |
+          echo "my_arithmetic-sondos-kocila deployment on stable servers"
+          hatch build
+          ls -l dist/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+  build_develop:
+    name: Build for Develop Deployment
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch hatch-vcs
+
+      - name: Build project
+        run: |
+          echo "my_arithmetic-sondos-kocila deployment on develop servers"
+          hatch build
+          ls -l dist/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-develop
+          path: dist/
